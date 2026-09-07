@@ -1,0 +1,88 @@
+openapi: 3.1.0
+info:
+  title: Ecommerce Warranty and Claims API
+  version: 1.0.0
+paths:
+  /api/v1/ecommerce/warranty-and-claims:
+    get:
+      operationId: ecommerce.warranty.and.claims.list
+      security: [{ sanctum: [] }]
+      responses:
+        '200': { description: Paginated authorized claims }
+    post:
+      operationId: ecommerce.warranty.and.claims.create
+      security: [{ sanctum: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/WarrantyClaimCreate' }
+      responses:
+        '201': { description: Claim created }
+  /api/v1/ecommerce/warranty-and-claims/{id}:
+    parameters: [{ name: id, in: path, required: true, schema: { type: string } }]
+    get:
+      operationId: ecommerce.warranty.and.claims.get
+      security: [{ sanctum: [] }]
+      responses: { '200': { description: Authorized claim } }
+    patch:
+      operationId: ecommerce.warranty.and.claims.update
+      security: [{ sanctum: [] }]
+      responses: { '200': { description: Claim transitioned } }
+  /api/v1/ecommerce/warranty-and-claims/registrations:
+    get:
+      operationId: ecommerce.warranty.and.claims.registrations.list
+      security: [{ sanctum: [] }]
+      responses: { '200': { description: Authorized registrations } }
+    post:
+      operationId: ecommerce.warranty.and.claims.registrations.create
+      security: [{ sanctum: [] }]
+      responses: { '201': { description: Registration created } }
+  /api/v1/ecommerce/warranty-and-claims/{id}/scans:
+    post:
+      operationId: ecommerce.warranty.and.claims.scans.create
+      security: [{ sanctum: [] }]
+      responses: { '201': { description: Scan recorded } }
+  /api/v1/ecommerce/warranty-and-claims/{id}/labels:
+    post:
+      operationId: ecommerce.warranty.and.claims.labels.create
+      security: [{ sanctum: [] }]
+      responses: { '201': { description: Label recorded } }
+  /api/v1/ecommerce/warranty-and-claims/{id}/manifests:
+    post:
+      operationId: ecommerce.warranty.and.claims.manifests.create
+      security: [{ sanctum: [] }]
+      responses: { '201': { description: Manifest recorded } }
+  /api/v1/ecommerce/warranty-and-claims/{id}/exceptions:
+    post:
+      operationId: ecommerce.warranty.and.claims.exceptions.create
+      security: [{ sanctum: [] }]
+      responses: { '201': { description: Exception recorded } }
+components:
+  securitySchemes:
+    sanctum: { type: http, scheme: bearer, bearerFormat: Sanctum }
+  schemas:
+    WarrantyClaimCreate:
+      type: object
+      required: [registration_id, issue]
+      properties:
+        registration_id: { type: integer }
+        issue: { type: string, maxLength: 10000 }
+        evidence: { type: array, maxItems: 20, items: { type: object } }
+        troubleshooting: { type: string, nullable: true }
+    WarrantyClaimResource:
+      type: object
+      required: [id, type, attributes]
+      properties:
+        id: { type: string }
+        type: { type: string, const: ecommerce-warranty-and-claims }
+        attributes:
+          type: object
+          required: [claim_number, status, issue]
+          properties:
+            claim_number: { type: string }
+            issue: { type: string }
+            evidence: { type: array, items: { type: object } }
+            troubleshooting: { type: string, nullable: true }
+            status: { type: string, enum: [submitted, reviewing, evidence_required, approved, resolved, denied, cancelled] }
+            decision: { type: string, nullable: true, enum: [repair, replace, refund, deny] }

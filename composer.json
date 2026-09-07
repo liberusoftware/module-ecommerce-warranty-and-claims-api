@@ -1,0 +1,12 @@
+{
+  "name": "liberusoftware/module-ecommerce-warranty-and-claims-api",
+  "description": "HTTP API adapter for the Ecommerce Warranty and Claims module.",
+  "type": "library",
+  "version": "0.1.0",
+  "license": "MIT",
+  "require": { "php": "^8.5", "illuminate/http": "^13.0", "illuminate/routing": "^13.0", "liberusoftware/module-ecommerce-warranty-and-claims": "^0.1" },
+  "autoload": { "psr-4": { "Liberu\\EcommerceWarrantyAndClaimsApi\\": "src/" } },
+  "extra": { "laravel": { "providers": ["Liberu\\EcommerceWarrantyAndClaimsApi\\Providers\\EcommerceWarrantyAndClaimsApiServiceProvider"] } },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
